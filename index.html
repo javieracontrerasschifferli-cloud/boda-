@@ -1,756 +1,181 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Javiera & Matías — 27.11.2026</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper: #FBFAF6;
-    --paper-deep: #F1EFE4;
-    --ink: #2F3327;
-    --sage: #B7CD7F;
-    --sage-deep: #5C6B3E;
-    --blush: #D9B9A7;
-    --gold: #B99C6B;
-    --gold-light: #E8D5B5;
-    --line: rgba(47,51,39,0.14);
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación</title>
+    <style>
+        /* Estilos generales */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #e8e2d9; /* Color de fondo similar a la piedra */
+            font-family: 'Georgia', serif;
+            color: #5a4e47;
+        }
 
-  *{box-sizing:border-box; margin:0; padding:0;}
+        /* Contenedor del sobre */
+        .envelope-container {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+            perspective: 1000px; /* Para el efecto 3D */
+        }
 
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
-  }
+        /* El sobre (parte trasera y delantera) */
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #e8d6d3; /* Color rosa polvo */
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.8s ease;
+            transform-style: preserve-3d;
+        }
 
-  html{scroll-behavior:smooth;}
+        /* La solapa (la tapa que se abre) */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #d6c1bf; /* Un tono un poco más oscuro para dar efecto de sombra */
+            clip-path: polygon(0 0, 50% 40%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Public Sans', sans-serif;
-    font-weight:300;
-    overflow-x:hidden;
-  }
+        /* Detalles del hilo y el lacre */
+        .envelope-details {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none; /* Para que el clic traspase */
+        }
 
-  a{color:inherit;}
-  button{font-family:inherit;}
+        /* El hilo cruzado */
+        .string-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #f4f1ea;
+            transform: translateY(-50%);
+        }
+        .string-v {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background-color: #f4f1ea;
+            transform: translateX(-50%);
+        }
 
-  .display{font-family:'Fraunces', serif;}
+        /* El sello de lacre dorado */
+        .wax-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #d4af37, #aa7c11);
+            border-radius: 50%;
+            border: 3px solid #8a6508;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #5a4104;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-align: center;
+            pointer-events: none;
+        }
 
-  section{
-    position:relative;
-    max-width:640px;
-    margin:0 auto;
-    padding:6rem 1.75rem;
-  }
+        /* El contenido de la invitación (oculto al inicio) */
+        .invitation-content {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background-color: #fffbfa;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.4s; /* Aparece después de abrirse */
+            z-index: 1;
+        }
 
-  .reveal{opacity:0; transform:translateY(22px); transition:opacity 1s ease, transform 1s ease;}
-  .reveal.in{opacity:1; transform:translateY(0);}
+        /* --- ESTADO ABIERTO (Al hacer clic) --- */
+        .envelope-container.open .envelope-flap {
+            transform: rotateX(180deg); /* La solapa se levanta */
+        }
 
-  .rule{
-    width:100%;
-    height:1px;
-    background:var(--line);
-    margin:0 auto 3rem;
-    max-width:120px;
-  }
+        .envelope-container.open .invitation-content {
+            opacity: 1; /* El contenido se hace visible */
+        }
 
-  .eyebrow{
-    text-align:center;
-    letter-spacing:0.32em;
-    text-transform:uppercase;
-    font-size:0.68rem;
-    color:var(--sage-deep);
-    margin-bottom:0.7rem;
-    font-weight:500;
-  }
-
-  h2{
-    text-align:center;
-    font-family:'Fraunces', serif;
-    font-weight:400;
-    font-size:clamp(1.9rem, 4.6vw, 2.5rem);
-    margin-bottom:2.6rem;
-    color:var(--ink);
-  }
-
-  /* =========================================================
-     SOBRE MEJORADO (INTRO)
-  ========================================================= */
-  body.locked{overflow:hidden; height:100vh;}
-
-  #intro{
-    position:fixed;
-    inset:0;
-    z-index:1000;
-    background:var(--paper);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:opacity 0.9s ease, visibility 0.9s ease;
-    cursor:pointer;
-  }
-  #intro.opened{opacity:0; visibility:hidden; pointer-events:none;}
-
-  /* Contenedor principal del sobre */
-  .sobre-container{
-    position:relative;
-    width:min(440px, 92vw);
-    aspect-ratio: 3/4.2;
-    background: var(--paper-deep);
-    border-radius: 8px;
-    box-shadow: 
-      0 20px 60px rgba(47,51,39,0.15),
-      0 8px 24px rgba(47,51,39,0.08),
-      inset 0 1px 0 rgba(255,255,255,0.8);
-    padding: 2.8rem 2.2rem;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.6s ease;
-    position:relative;
-    overflow:hidden;
-  }
-
-  .sobre-container:hover{
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 
-      0 30px 80px rgba(47,51,39,0.2),
-      0 12px 32px rgba(47,51,39,0.1);
-  }
-
-  /* Borde decorativo interno */
-  .sobre-container::before{
-    content: '';
-    position:absolute;
-    inset: 14px;
-    border: 1.5px solid rgba(47,51,39,0.06);
-    border-radius: 4px;
-    pointer-events:none;
-  }
-
-  /* Líneas de textura de papel */
-  .sobre-container::after{
-    content: '';
-    position:absolute;
-    inset: 0;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 28px,
-        rgba(47,51,39,0.02) 28px,
-        rgba(47,51,39,0.02) 29px
-      );
-    pointer-events:none;
-    border-radius: 8px;
-  }
-
-  /* Solapa del sobre (triángulo superior) */
-  .solapa{
-    position:absolute;
-    top: -2px;
-    left: 0;
-    right: 0;
-    height: 45%;
-    background: var(--paper-deep);
-    border-radius: 8px 8px 0 0;
-    clip-path: polygon(0 0, 100% 0, 50% 60%, 0 0);
-    box-shadow: 0 -4px 20px rgba(47,51,39,0.04);
-    pointer-events:none;
-    z-index: 1;
-    border-bottom: 1px solid rgba(47,51,39,0.04);
-  }
-
-  /* Sombra de la solapa */
-  .solapa-sombra{
-    position:absolute;
-    top: 42%;
-    left: 10%;
-    right: 10%;
-    height: 8px;
-    background: linear-gradient(to bottom, rgba(47,51,39,0.06), transparent);
-    pointer-events:none;
-    z-index: 0;
-    border-radius: 50%;
-  }
-
-  /* Contenido del sobre (detrás de la solapa) */
-  .sobre-contenido{
-    position:relative;
-    z-index: 2;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    margin-top: 1.5rem;
-  }
-
-  /* Sello mejorado */
-  .sobre-sello{
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #F5EDE0, var(--gold-light));
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow: 
-      0 4px 24px rgba(185,156,107,0.35),
-      inset 0 -3px 10px rgba(0,0,0,0.08),
-      inset 0 3px 10px rgba(255,255,255,0.5);
-    margin-bottom: 1.8rem;
-    position:relative;
-    border: 4px solid rgba(185,156,107,0.25);
-    flex-shrink:0;
-    transition: transform 0.5s ease;
-  }
-
-  .sobre-container:hover .sobre-sello{
-    transform: rotate(-8deg) scale(1.06);
-  }
-
-  /* Círculo exterior decorativo del sello */
-  .sobre-sello::before{
-    content: '';
-    position:absolute;
-    inset: 6px;
-    border-radius: 50%;
-    border: 1.5px dashed rgba(92,107,62,0.2);
-    animation: girarSello 25s linear infinite;
-  }
-
-  /* Puntos decorativos alrededor del sello */
-  .sobre-sello::after{
-    content: '✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦';
-    position:absolute;
-    inset: -18px;
-    color: rgba(185,156,107,0.15);
-    font-size: 8px;
-    letter-spacing: 6px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    animation: girarSello 30s linear infinite;
-  }
-
-  @keyframes girarSello{
-    to{ transform: rotate(360deg); }
-  }
-
-  .sobre-sello-iniciales{
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-    font-style: italic;
-    font-size: 2.4rem;
-    color: var(--sage-deep);
-    letter-spacing: 0.1em;
-    text-shadow: 0 1px 3px rgba(255,255,255,0.3);
-    position:relative;
-    z-index:2;
-  }
-
-  .sobre-sello-iniciales .ampersand{
-    color: var(--gold);
-    font-size: 0.7em;
-  }
-
-  /* Texto dentro del sobre */
-  .sobre-texto{
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--ink);
-    opacity: 0.6;
-    text-align:center;
-    line-height: 2;
-    margin-top: 0.3rem;
-    letter-spacing: 0.05em;
-    max-width: 80%;
-  }
-
-  .sobre-texto strong{
-    font-weight: 400;
-    opacity: 0.9;
-    color: var(--sage-deep);
-  }
-
-  /* Línea decorativa */
-  .sobre-linea{
-    width: 40px;
-    height: 1.5px;
-    background: var(--sage);
-    opacity: 0.2;
-    margin: 0.8rem auto;
-    border-radius: 2px;
-  }
-
-  /* Flecha animada */
-  .sobre-flecha{
-    margin-top: 1.8rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--sage-deep);
-    opacity: 0.5;
-    animation: pulseFlecha 2.2s ease-in-out infinite;
-    font-family: 'Public Sans', sans-serif;
-    font-weight: 400;
-  }
-
-  .sobre-flecha .icono{
-    display:inline-block;
-    margin-left: 6px;
-    transition: transform 0.3s ease;
-  }
-
-  .sobre-container:hover .sobre-flecha .icono{
-    transform: translateX(4px);
-  }
-
-  @keyframes pulseFlecha{
-    0%, 100%{ opacity: 0.4; transform: translateY(0); }
-    50%{ opacity: 0.8; transform: translateY(4px); }
-  }
-
-  /* Fecha pequeña abajo */
-  .sobre-fecha{
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--ink);
-    opacity: 0.25;
-    margin-top: 0.8rem;
-    font-weight: 400;
-  }
-
-  /* Sello de cera abajo (decorativo) */
-  .sobre-cera{
-    position:absolute;
-    bottom: -8px;
-    right: 30px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, #E8D5B5, #C9A97E);
-    box-shadow: 
-      0 2px 8px rgba(185,156,107,0.3),
-      inset 0 -1px 4px rgba(0,0,0,0.1);
-    opacity: 0.3;
-    pointer-events:none;
-  }
-
-  /* =========================================================
-     HERO Y DEMÁS SECCIONES (sin cambios)
-  ========================================================= */
-  .hero{
-    max-width:760px;
-    padding:5rem 1.75rem 4rem;
-    text-align:center;
-    position:relative;
-  }
-  .hero-blob{
-    position:absolute;
-    top:-4%; left:50%;
-    width:min(620px, 150vw);
-    transform:translate(-50%,0);
-    z-index:-1;
-  }
-  .hero-eyebrow{
-    font-size:0.72rem;
-    letter-spacing:0.35em;
-    text-transform:uppercase;
-    color:var(--sage-deep);
-    margin-bottom:1.4rem;
-  }
-  .hero-names{
-    font-family:'Fraunces', serif;
-    font-weight:300;
-    font-style:italic;
-    font-size:clamp(3rem, 10vw, 5.2rem);
-    line-height:1.02;
-    color:var(--ink);
-  }
-  .hero-names .amp{
-    display:block;
-    color:var(--sage-deep);
-    font-size:0.5em;
-    margin:0.15em 0;
-  }
-  .hero-meta{
-    margin-top:2rem;
-    display:flex;
-    justify-content:center;
-    gap:1.4rem;
-    flex-wrap:wrap;
-    font-size:0.8rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    color:var(--ink);
-    opacity:0.7;
-  }
-  .hero-meta span:not(:last-child)::after{
-    content:"—";
-    margin-left:1.4rem;
-    opacity:0.4;
-  }
-
-  .countdown-section{text-align:center;}
-  .countdown{
-    display:flex;
-    justify-content:center;
-    gap:clamp(1.4rem, 6vw, 3rem);
-    margin-top:2.2rem;
-  }
-  .count-unit{display:flex; flex-direction:column; align-items:center;}
-  .count-num{
-    font-family:'Fraunces', serif;
-    font-weight:400;
-    font-size:clamp(2rem, 6vw, 3rem);
-    color:var(--ink);
-    font-variant-numeric:tabular-nums;
-    line-height:1;
-  }
-  .count-label{
-    margin-top:0.7rem;
-    font-size:0.62rem;
-    letter-spacing:0.22em;
-    text-transform:uppercase;
-    color:var(--sage-deep);
-  }
-  .countdown-note{
-    margin-top:2.2rem;
-    font-size:0.92rem;
-    color:var(--ink);
-    opacity:0.65;
-    font-style:italic;
-    font-family:'Fraunces', serif;
-  }
-
-  .details-list{
-    margin-top:1rem;
-    display:flex;
-    flex-direction:column;
-  }
-  .detail-row{
-    display:grid;
-    grid-template-columns:110px 1fr;
-    gap:1.5rem;
-    padding:1.8rem 0;
-    border-top:1px solid var(--line);
-    align-items:baseline;
-  }
-  .detail-row:last-child{border-bottom:1px solid var(--line);}
-  .detail-label{
-    font-size:0.68rem;
-    letter-spacing:0.2em;
-    text-transform:uppercase;
-    color:var(--sage-deep);
-  }
-  .detail-value{
-    font-size:1.02rem;
-    line-height:1.6;
-  }
-  .map-link{
-    display:inline-block;
-    margin-top:0.6rem;
-    font-size:0.72rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    color:var(--ink);
-    text-decoration:none;
-    border-bottom:1px solid var(--ink);
-    padding-bottom:1px;
-    transition:opacity 0.3s ease;
-  }
-  .map-link:hover{opacity:0.55;}
-
-  .dress-section{text-align:center;}
-  .swatch-row{
-    display:flex;
-    justify-content:center;
-    gap:1rem;
-    margin:2.2rem 0 2.2rem;
-    flex-wrap:wrap;
-  }
-  .swatch{display:flex; flex-direction:column; align-items:center; gap:0.55rem;}
-  .swatch-color{width:48px; height:48px; border-radius:50%;}
-  .swatch-label{
-    font-size:0.62rem;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--ink);
-    opacity:0.55;
-  }
-  .dress-copy{
-    max-width:480px;
-    margin:0 auto;
-    font-size:0.98rem;
-    line-height:1.9;
-    color:var(--ink);
-    opacity:0.85;
-  }
-  .dress-note{
-    margin-top:1.6rem;
-    display:inline-block;
-    font-family:'Fraunces', serif;
-    font-style:italic;
-    font-size:1rem;
-    color:var(--sage-deep);
-  }
-
-  .rsvp-section{text-align:center;}
-  .rsvp-copy{
-    max-width:420px;
-    margin:0 auto 2.2rem;
-    font-size:0.98rem;
-    line-height:1.85;
-    opacity:0.8;
-  }
-  .whatsapp-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:0.7rem;
-    background:var(--ink);
-    color:var(--paper);
-    text-decoration:none;
-    padding:1rem 2.3rem;
-    border-radius:2px;
-    font-size:0.82rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    transition:transform 0.35s ease, background 0.35s ease;
-  }
-  .whatsapp-btn:hover{background:var(--sage-deep); transform:translateY(-3px);}
-  .whatsapp-btn:focus-visible{outline:3px solid var(--sage); outline-offset:3px;}
-  .whatsapp-btn svg{width:18px; height:18px; flex-shrink:0;}
-  .rsvp-deadline{
-    margin-top:1.6rem;
-    font-size:0.72rem;
-    letter-spacing:0.15em;
-    color:var(--sage-deep);
-    text-transform:uppercase;
-  }
-
-  footer{text-align:center; padding:4.5rem 1.5rem 3.5rem;}
-  footer .monogram-small{
-    font-family:'Fraunces', serif;
-    font-style:italic;
-    font-size:1.5rem;
-    color:var(--sage-deep);
-    margin-bottom:0.7rem;
-  }
-  footer p{
-    font-size:0.68rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    opacity:0.45;
-  }
-
-  @media (max-width: 480px){
-    .sobre-container{
-      padding: 2rem 1.5rem;
-    }
-    .sobre-sello{
-      width: 85px;
-      height: 85px;
-    }
-    .sobre-sello-iniciales{
-      font-size: 1.8rem;
-    }
-    .sobre-texto{
-      font-size: 0.9rem;
-    }
-    .sobre-flecha{
-      font-size: 0.6rem;
-    }
-  }
-</style>
+        /* Texto de ejemplo dentro de la invitación */
+        h1 { font-size: 22px; margin: 0 0 10px 0; color: #b08a7d; letter-spacing: 2px; }
+        p { font-size: 14px; line-height: 1.5; color: #7a6b64; margin: 5px 0; }
+    </style>
 </head>
-<body class="locked">
+<body>
 
-<!-- SOBRE MEJORADO -->
-<div id="intro">
-  <div class="sobre-container" id="cartaBtn">
-    
-    <!-- Solapa del sobre -->
-    <div class="solapa"></div>
-    <div class="solapa-sombra"></div>
-    
-    <!-- Contenido -->
-    <div class="sobre-contenido">
-      
-      <!-- Sello -->
-      <div class="sobre-sello">
-        <span class="sobre-sello-iniciales">J <span class="ampersand">&amp;</span> M</span>
-      </div>
-      
-      <!-- Texto -->
-      <p class="sobre-texto">
-        <strong>Javiera &amp; Matías</strong><br>
-        tienen el honor de invitarte<br>
-        a celebrar su matrimonio
-      </p>
-      
-      <div class="sobre-linea"></div>
-      
-      <!-- Flecha -->
-      <span class="sobre-flecha">
-        Abrir invitación <span class="icono">→</span>
-      </span>
-      
-      <!-- Fecha -->
-      <span class="sobre-fecha">27 · 11 · 2026</span>
+    <div class="envelope-container" onclick="toggleEnvelope(this)">
+        <!-- El contenido interior (lo que está dentro del sobre) -->
+        <div class="invitation-content">
+            <h1>Nuestra Boda</h1>
+            <p>Nos alegra muchísimo que nos acompañes</p>
+            <p><strong>15 de Agosto, 2026</strong></p>
+            <p>Jardín El Paraíso, a las 18:00 h.</p>
+            <br>
+            <p style="font-size: 12px; font-style: italic;">(Haz clic fuera del sobre para cerrarlo)</p>
+        </div>
+
+        <!-- El cuerpo del sobre -->
+        <div class="envelope">
+            <!-- La solapa -->
+            <div class="envelope-flap"></div>
+            
+            <!-- El hilo y el sello -->
+            <div class="envelope-details">
+                <div class="string-h"></div>
+                <div class="string-v"></div>
+                <div class="wax-seal">🕊️</div> <!-- Usamos un emoji de paloma para simular el relieve -->
+            </div>
+        </div>
     </div>
-    
-    <!-- Sello de cera decorativo -->
-    <div class="sobre-cera"></div>
-    
-  </div>
-</div>
 
-<!-- HERO -->
-<section class="hero">
-  <svg class="hero-blob" viewBox="0 0 700 500" xmlns="http://www.w3.org/2000/svg">
-    <defs><filter id="blurB"><feGaussianBlur stdDeviation="30"/></filter></defs>
-    <g filter="url(#blurB)">
-      <path d="M120 140 C220 60, 420 60, 520 150 C610 230, 590 330, 480 380 C370 430, 200 420, 130 330 C70 250, 60 200, 120 140Z" fill="#B7CD7F" opacity="0.4"/>
-      <path d="M420 220 C500 210, 570 260, 560 330 C550 400, 470 430, 410 410 C350 390, 330 330, 350 280 C370 230, 380 226, 420 220Z" fill="#D9B9A7" opacity="0.3"/>
-    </g>
-  </svg>
-  <span class="hero-eyebrow">Se casan</span>
-  <h1 class="hero-names">Javiera<span class="amp">&amp;</span>Matías</h1>
-  <div class="hero-meta">
-    <span>27 de noviembre, 2026</span>
-    <span>Camino Patagual, Chile</span>
-  </div>
-</section>
-
-<!-- COUNTDOWN -->
-<section class="countdown-section reveal">
-  <div class="rule"></div>
-  <div class="eyebrow">Faltan</div>
-  <h2>Cuenta regresiva</h2>
-  <div class="countdown">
-    <div class="count-unit"><span class="count-num" id="cd-days">00</span><span class="count-label">Días</span></div>
-    <div class="count-unit"><span class="count-num" id="cd-hours">00</span><span class="count-label">Horas</span></div>
-    <div class="count-unit"><span class="count-num" id="cd-mins">00</span><span class="count-label">Min</span></div>
-    <div class="count-unit"><span class="count-num" id="cd-secs">00</span><span class="count-label">Seg</span></div>
-  </div>
-  <p class="countdown-note">Para celebrar el inicio de nuestra historia juntos</p>
-</section>
-
-<!-- DETAILS -->
-<section class="reveal">
-  <div class="rule"></div>
-  <div class="eyebrow">Información</div>
-  <h2>El gran día</h2>
-  <div class="details-list">
-    <div class="detail-row">
-      <span class="detail-label">Fecha</span>
-      <span class="detail-value">Viernes 27 de noviembre de 2026. Los esperamos para celebrar juntos.</span>
-    </div>
-    <div class="detail-row">
-      <span class="detail-label">Lugar</span>
-      <span class="detail-value">
-        Camino Patagual km 5.5, Chile
-        <br>
-        <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Camino+Patagual+km+5.5" target="_blank" rel="noopener">Ver en el mapa</a>
-      </span>
-    </div>
-  </div>
-</section>
-
-<!-- DRESS CODE -->
-<section class="dress-section reveal">
-  <div class="rule"></div>
-  <div class="eyebrow">Código de vestimenta</div>
-  <h2>Elegante formal</h2>
-  <div class="swatch-row">
-    <div class="swatch"><div class="swatch-color" style="background:#B7CD7F"></div><span class="swatch-label">Verde salvia</span></div>
-    <div class="swatch"><div class="swatch-color" style="background:#5C6B3E"></div><span class="swatch-label">Verde oliva</span></div>
-    <div class="swatch"><div class="swatch-color" style="background:#F1EFE4"></div><span class="swatch-label">Marfil</span></div>
-    <div class="swatch"><div class="swatch-color" style="background:#E8C9C3"></div><span class="swatch-label">Rosa palo</span></div>
-    <div class="swatch"><div class="swatch-color" style="background:#C9A97E"></div><span class="swatch-label">Arena</span></div>
-  </div>
-  <p class="dress-copy">
-    Vestiremos de forma elegante y formal, en sintonía con nuestro tono verde. El marfil, los tonos tierra y los colores pasteles —como el rosa— son muy bienvenidos.
-  </p>
-  <span class="dress-note">El blanco se reserva para la novia</span>
-</section>
-
-<!-- RSVP -->
-<section class="rsvp-section reveal">
-  <div class="rule"></div>
-  <div class="eyebrow">Confirmación</div>
-  <h2>¿Nos acompañas?</h2>
-  <p class="rsvp-copy">Tu presencia es el mejor regalo. Ayúdanos a preparar cada detalle confirmando tu asistencia por WhatsApp.</p>
-  <a class="whatsapp-btn" href="https://wa.me/56946541095?text=%C2%A1Hola!%20Quiero%20confirmar%20mi%20asistencia%20a%20la%20boda%20de%20Javiera%20%26%20Mat%C3%ADas%20%F0%9F%92%9A" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5C10.1 9 9.7 8 9.5 7.6c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3 0 1.4 1 2.7 1.1 2.9.1.2 2 3.1 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.5 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.3.9.9-3.2-.2-.3C3.6 14.5 3.1 13.3 3.1 12c0-4.9 4-8.9 8.9-8.9s8.9 4 8.9 8.9-4 8.9-8.9 8.9z"/></svg>
-    Confirmar por WhatsApp
-  </a>
-  <div class="rsvp-deadline">Te agradecemos confirmar antes del 27 de octubre</div>
-</section>
-
-<footer>
-  <div class="monogram-small">J &amp; M</div>
-  <p>27 · 11 · 2026 — Camino Patagual</p>
-</footer>
-
-<script>
-  // Abrir sobre
-  const introEl = document.getElementById('intro');
-  const cartaBtn = document.getElementById('cartaBtn');
-  const body = document.body;
-
-  cartaBtn.addEventListener('click', ()=>{
-    introEl.classList.add('opened');
-    body.classList.remove('locked');
-  });
-
-  introEl.addEventListener('click', (e)=>{
-    if(e.target === introEl){
-      introEl.classList.add('opened');
-      body.classList.remove('locked');
-    }
-  });
-
-  // Countdown
-  const weddingDate = new Date("2026-11-27T00:00:00");
-  function updateCountdown(){
-    const now = new Date();
-    let diff = weddingDate - now;
-    if(diff < 0) diff = 0;
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff / (1000*60*60)) % 24);
-    const mins = Math.floor((diff / (1000*60)) % 60);
-    const secs = Math.floor((diff / 1000) % 60);
-    document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
-    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
-    document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
-    document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-
-  // Reveal on scroll
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('in');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {threshold:0.15});
-  revealEls.forEach(el=>observer.observe(el));
-</script>
+    <script>
+        function toggleEnvelope(element) {
+            // Alterna la clase 'open' para abrir o cerrar el sobre
+            element.classList.toggle('open');
+        }
+    </script>
 
 </body>
 </html>
