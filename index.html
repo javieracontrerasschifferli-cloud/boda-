@@ -16,6 +16,7 @@
     --sage-deep: #5C6B3E;
     --blush: #D9B9A7;
     --gold: #B99C6B;
+    --gold-light: #E8D5B5;
     --line: rgba(47,51,39,0.14);
   }
 
@@ -78,7 +79,7 @@
   }
 
   /* =========================================================
-     CARTA CON SELLO (INTRO)
+     SOBRE MEJORADO (INTRO)
   ========================================================= */
   body.locked{overflow:hidden; height:100vh;}
 
@@ -95,17 +96,18 @@
   }
   #intro.opened{opacity:0; visibility:hidden; pointer-events:none;}
 
-  .carta-container{
+  /* Contenedor principal del sobre */
+  .sobre-container{
     position:relative;
-    width:min(420px, 90vw);
-    aspect-ratio: 3/4;
-    background:var(--paper-deep);
-    border-radius: 4px;
+    width:min(440px, 92vw);
+    aspect-ratio: 3/4.2;
+    background: var(--paper-deep);
+    border-radius: 8px;
     box-shadow: 
-      0 20px 60px rgba(47,51,39,0.12),
-      0 8px 24px rgba(47,51,39,0.06),
-      inset 0 1px 0 rgba(255,255,255,0.6);
-    padding: 2.5rem 2rem;
+      0 20px 60px rgba(47,51,39,0.15),
+      0 8px 24px rgba(47,51,39,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    padding: 2.8rem 2.2rem;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -115,124 +117,201 @@
     overflow:hidden;
   }
 
-  .carta-container:hover{
-    transform: translateY(-6px) scale(1.01);
+  .sobre-container:hover{
+    transform: translateY(-8px) scale(1.01);
     box-shadow: 
-      0 30px 80px rgba(47,51,39,0.16),
-      0 12px 32px rgba(47,51,39,0.08);
+      0 30px 80px rgba(47,51,39,0.2),
+      0 12px 32px rgba(47,51,39,0.1);
   }
 
-  /* Decoración de carta - esquinas */
-  .carta-container::before{
+  /* Borde decorativo interno */
+  .sobre-container::before{
     content: '';
     position:absolute;
-    inset:12px;
-    border:1px solid rgba(47,51,39,0.06);
-    border-radius:2px;
+    inset: 14px;
+    border: 1.5px solid rgba(47,51,39,0.06);
+    border-radius: 4px;
     pointer-events:none;
   }
 
-  /* Líneas de cuaderno */
-  .carta-container::after{
+  /* Líneas de textura de papel */
+  .sobre-container::after{
     content: '';
     position:absolute;
-    top: 35%;
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    background: rgba(47,51,39,0.04);
-    box-shadow: 
-      0 25px 0 rgba(47,51,39,0.04),
-      0 50px 0 rgba(47,51,39,0.04),
-      0 75px 0 rgba(47,51,39,0.04);
-    pointer-events:none;
-  }
-
-  .carta-sobreturno{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
+    inset: 0;
     background: 
-      linear-gradient(to bottom, transparent 30%, rgba(47,51,39,0.01) 100%);
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(47,51,39,0.02) 28px,
+        rgba(47,51,39,0.02) 29px
+      );
     pointer-events:none;
-    border-radius:4px;
+    border-radius: 8px;
   }
 
-  .carta-sello{
-    width: 100px;
-    height: 100px;
+  /* Solapa del sobre (triángulo superior) */
+  .solapa{
+    position:absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: var(--paper-deep);
+    border-radius: 8px 8px 0 0;
+    clip-path: polygon(0 0, 100% 0, 50% 60%, 0 0);
+    box-shadow: 0 -4px 20px rgba(47,51,39,0.04);
+    pointer-events:none;
+    z-index: 1;
+    border-bottom: 1px solid rgba(47,51,39,0.04);
+  }
+
+  /* Sombra de la solapa */
+  .solapa-sombra{
+    position:absolute;
+    top: 42%;
+    left: 10%;
+    right: 10%;
+    height: 8px;
+    background: linear-gradient(to bottom, rgba(47,51,39,0.06), transparent);
+    pointer-events:none;
+    z-index: 0;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #E8D5B5, #C9A97E);
+  }
+
+  /* Contenido del sobre (detrás de la solapa) */
+  .sobre-contenido{
+    position:relative;
+    z-index: 2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-top: 1.5rem;
+  }
+
+  /* Sello mejorado */
+  .sobre-sello{
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #F5EDE0, var(--gold-light));
     display:flex;
     align-items:center;
     justify-content:center;
     box-shadow: 
-      0 4px 20px rgba(185,156,107,0.3),
-      inset 0 -2px 8px rgba(0,0,0,0.1),
-      inset 0 2px 8px rgba(255,255,255,0.4);
-    margin-bottom: 2rem;
+      0 4px 24px rgba(185,156,107,0.35),
+      inset 0 -3px 10px rgba(0,0,0,0.08),
+      inset 0 3px 10px rgba(255,255,255,0.5);
+    margin-bottom: 1.8rem;
     position:relative;
-    border: 3px solid rgba(185,156,107,0.3);
+    border: 4px solid rgba(185,156,107,0.25);
     flex-shrink:0;
     transition: transform 0.5s ease;
   }
 
-  .carta-container:hover .carta-sello{
-    transform: rotate(-6deg) scale(1.05);
+  .sobre-container:hover .sobre-sello{
+    transform: rotate(-8deg) scale(1.06);
   }
 
-  .carta-sello::after{
+  /* Círculo exterior decorativo del sello */
+  .sobre-sello::before{
     content: '';
     position:absolute;
-    inset: -8px;
+    inset: 6px;
     border-radius: 50%;
-    border: 1px dashed rgba(185,156,107,0.2);
-    animation: girarSello 20s linear infinite;
+    border: 1.5px dashed rgba(92,107,62,0.2);
+    animation: girarSello 25s linear infinite;
+  }
+
+  /* Puntos decorativos alrededor del sello */
+  .sobre-sello::after{
+    content: '✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦';
+    position:absolute;
+    inset: -18px;
+    color: rgba(185,156,107,0.15);
+    font-size: 8px;
+    letter-spacing: 6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    animation: girarSello 30s linear infinite;
   }
 
   @keyframes girarSello{
     to{ transform: rotate(360deg); }
   }
 
-  .carta-sello-iniciales{
+  .sobre-sello-iniciales{
     font-family: 'Fraunces', serif;
     font-weight: 300;
     font-style: italic;
-    font-size: 2.2rem;
-    color: #5C6B3E;
+    font-size: 2.4rem;
+    color: var(--sage-deep);
     letter-spacing: 0.1em;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+    text-shadow: 0 1px 3px rgba(255,255,255,0.3);
+    position:relative;
+    z-index:2;
   }
 
-  .carta-texto{
+  .sobre-sello-iniciales .ampersand{
+    color: var(--gold);
+    font-size: 0.7em;
+  }
+
+  /* Texto dentro del sobre */
+  .sobre-texto{
     font-family: 'Fraunces', serif;
     font-weight: 300;
     font-style: italic;
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--ink);
     opacity: 0.6;
     text-align:center;
-    line-height: 1.8;
-    margin-top: 0.5rem;
+    line-height: 2;
+    margin-top: 0.3rem;
     letter-spacing: 0.05em;
+    max-width: 80%;
   }
 
-  .carta-texto strong{
+  .sobre-texto strong{
     font-weight: 400;
     opacity: 0.9;
+    color: var(--sage-deep);
   }
 
-  .carta-flecha{
+  /* Línea decorativa */
+  .sobre-linea{
+    width: 40px;
+    height: 1.5px;
+    background: var(--sage);
+    opacity: 0.2;
+    margin: 0.8rem auto;
+    border-radius: 2px;
+  }
+
+  /* Flecha animada */
+  .sobre-flecha{
     margin-top: 1.8rem;
     font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--sage-deep);
     opacity: 0.5;
-    animation: pulseFlecha 2s ease-in-out infinite;
+    animation: pulseFlecha 2.2s ease-in-out infinite;
     font-family: 'Public Sans', sans-serif;
+    font-weight: 400;
+  }
+
+  .sobre-flecha .icono{
+    display:inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+  }
+
+  .sobre-container:hover .sobre-flecha .icono{
+    transform: translateX(4px);
   }
 
   @keyframes pulseFlecha{
@@ -240,17 +319,35 @@
     50%{ opacity: 0.8; transform: translateY(4px); }
   }
 
-  .carta-fecha{
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
+  /* Fecha pequeña abajo */
+  .sobre-fecha{
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--ink);
+    opacity: 0.25;
+    margin-top: 0.8rem;
+    font-weight: 400;
+  }
+
+  /* Sello de cera abajo (decorativo) */
+  .sobre-cera{
+    position:absolute;
+    bottom: -8px;
+    right: 30px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #E8D5B5, #C9A97E);
+    box-shadow: 
+      0 2px 8px rgba(185,156,107,0.3),
+      inset 0 -1px 4px rgba(0,0,0,0.1);
     opacity: 0.3;
-    margin-top: 0.5rem;
+    pointer-events:none;
   }
 
   /* =========================================================
-     HERO
+     HERO Y DEMÁS SECCIONES (sin cambios)
   ========================================================= */
   .hero{
     max-width:760px;
@@ -304,9 +401,6 @@
     opacity:0.4;
   }
 
-  /* =========================================================
-     COUNTDOWN
-  ========================================================= */
   .countdown-section{text-align:center;}
   .countdown{
     display:flex;
@@ -339,9 +433,6 @@
     font-family:'Fraunces', serif;
   }
 
-  /* =========================================================
-     DETAILS
-  ========================================================= */
   .details-list{
     margin-top:1rem;
     display:flex;
@@ -380,9 +471,6 @@
   }
   .map-link:hover{opacity:0.55;}
 
-  /* =========================================================
-     DRESS CODE
-  ========================================================= */
   .dress-section{text-align:center;}
   .swatch-row{
     display:flex;
@@ -417,9 +505,6 @@
     color:var(--sage-deep);
   }
 
-  /* =========================================================
-     RSVP
-  ========================================================= */
   .rsvp-section{text-align:center;}
   .rsvp-copy{
     max-width:420px;
@@ -453,9 +538,6 @@
     text-transform:uppercase;
   }
 
-  /* =========================================================
-     FOOTER
-  ========================================================= */
   footer{text-align:center; padding:4.5rem 1.5rem 3.5rem;}
   footer .monogram-small{
     font-family:'Fraunces', serif;
@@ -471,50 +553,65 @@
     opacity:0.45;
   }
 
-  /* =========================================================
-     RESPONSIVE
-  ========================================================= */
   @media (max-width: 480px){
-    .carta-container{
+    .sobre-container{
       padding: 2rem 1.5rem;
     }
-    .carta-sello{
-      width: 80px;
-      height: 80px;
+    .sobre-sello{
+      width: 85px;
+      height: 85px;
     }
-    .carta-sello-iniciales{
+    .sobre-sello-iniciales{
       font-size: 1.8rem;
     }
-    .carta-texto{
-      font-size: 0.85rem;
+    .sobre-texto{
+      font-size: 0.9rem;
+    }
+    .sobre-flecha{
+      font-size: 0.6rem;
     }
   }
 </style>
 </head>
 <body class="locked">
 
-<!-- CARTA CON SELLO -->
+<!-- SOBRE MEJORADO -->
 <div id="intro">
-  <div class="carta-container" id="cartaBtn">
-    <div class="carta-sobreturno"></div>
+  <div class="sobre-container" id="cartaBtn">
     
-    <!-- Sello -->
-    <div class="carta-sello">
-      <span class="carta-sello-iniciales">J &amp; M</span>
+    <!-- Solapa del sobre -->
+    <div class="solapa"></div>
+    <div class="solapa-sombra"></div>
+    
+    <!-- Contenido -->
+    <div class="sobre-contenido">
+      
+      <!-- Sello -->
+      <div class="sobre-sello">
+        <span class="sobre-sello-iniciales">J <span class="ampersand">&amp;</span> M</span>
+      </div>
+      
+      <!-- Texto -->
+      <p class="sobre-texto">
+        <strong>Javiera &amp; Matías</strong><br>
+        tienen el honor de invitarte<br>
+        a celebrar su matrimonio
+      </p>
+      
+      <div class="sobre-linea"></div>
+      
+      <!-- Flecha -->
+      <span class="sobre-flecha">
+        Abrir invitación <span class="icono">→</span>
+      </span>
+      
+      <!-- Fecha -->
+      <span class="sobre-fecha">27 · 11 · 2026</span>
     </div>
     
-    <!-- Texto de la carta -->
-    <p class="carta-texto">
-      <strong>Javiera &amp; Matías</strong><br>
-      tienen el honor de invitarte<br>
-      a celebrar su matrimonio
-    </p>
+    <!-- Sello de cera decorativo -->
+    <div class="sobre-cera"></div>
     
-    <!-- Flecha / instrucción -->
-    <span class="carta-flecha">✦ Abrir invitación ✦</span>
-    
-    <!-- Fecha pequeña -->
-    <span class="carta-fecha">27 · 11 · 2026</span>
   </div>
 </div>
 
@@ -607,7 +704,7 @@
 </footer>
 
 <script>
-  // Abrir carta con sello
+  // Abrir sobre
   const introEl = document.getElementById('intro');
   const cartaBtn = document.getElementById('cartaBtn');
   const body = document.body;
@@ -617,7 +714,6 @@
     body.classList.remove('locked');
   });
 
-  // También permitir cerrar clickeando fuera de la carta (en el fondo)
   introEl.addEventListener('click', (e)=>{
     if(e.target === introEl){
       introEl.classList.add('opened');
